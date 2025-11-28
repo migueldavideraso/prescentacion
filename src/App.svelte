@@ -1,10 +1,11 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, afterUpdate } from 'svelte';
   import QRCode from 'qrcode';
   import Tecnologias from './Tecnologias.svelte';
   
   // Estado para manejar la navegación entre páginas
   let currentPage = 'qr'; // 'qr' o 'tech'
+  let previousPage = ''; // Para detectar cambios de página
   
   // Función para cambiar de página
   function navigateTo(page) {
@@ -20,15 +21,50 @@
     { url: 'https://antigravity.google/', nombre: 'Google Antigravity' },
     { url: 'https://www.trae.ai/', nombre: 'Trae AI' }
   ];
+  
+  // Función para renderizar los códigos QR
+  function renderQRCodes() {
+    // Pequeño timeout para asegurar que los elementos estén renderizados
+    setTimeout(() => {
+      enlaces.forEach((enlace, i) => {
+        const canvas = document.getElementById(`qr-${i}`);
+        if (canvas) {
+          QRCode.toCanvas(canvas, enlace.url, { 
+            width: 120, 
+            margin: 0, 
+            color: { dark: "#000000", light: "#ffffff" } 
+          }, function (error) {
+            if (error) console.error(error);
+          });
+        }
+      });
+    }, 50);
+  }
+
+  // Se ejecuta después de cada actualización del DOM
+  afterUpdate(() => {
+    // Si cambiamos a la página de QR desde otra página
+    if (currentPage === 'qr' && previousPage !== 'qr') {
+      renderQRCodes();
+    }
+    // Actualizar el estado previo
+    previousPage = currentPage;
+  });
 
   onMount(() => {
     // Manejar navegación con hash
     const handleHashChange = () => {
       const hash = window.location.hash;
+      previousPage = currentPage; // Guardar página anterior
+      
       if (hash === '#/tech') {
         currentPage = 'tech';
       } else {
         currentPage = 'qr';
+        // Si volvemos a la página QR, renderizar códigos QR
+        if (previousPage !== 'qr') {
+          renderQRCodes();
+        }
       }
     };
     
@@ -38,16 +74,9 @@
     // Escuchar cambios en el hash
     window.addEventListener('hashchange', handleHashChange);
     
-    // Renderizar códigos QR si estamos en la página de QR
+    // Renderizar códigos QR iniciales si estamos en la página de QR
     if (currentPage === 'qr') {
-      enlaces.forEach((enlace, i) => {
-        const canvas = document.getElementById(`qr-${i}`);
-        if (canvas) {
-          QRCode.toCanvas(canvas, enlace.url, { width: 120, margin: 0, color: { dark: "#000000", light: "#ffffff" } }, function (error) {
-            if (error) console.error(error);
-          });
-        }
-      });
+      renderQRCodes();
     }
     
     // Cleanup al desmontar
