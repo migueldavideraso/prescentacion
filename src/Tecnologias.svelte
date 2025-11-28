@@ -15,6 +15,24 @@
       ]
     },
     {
+      titulo: "Bases de Datos",
+      tecnologias: [
+        {
+          nombre: "Turso",
+          descripcion: "Base de datos SQL distribuida y extremadamente rápida. Basada en libSQL, bifurcación de SQLite, optimizada para edge computing y aplicaciones globales. Ofrece baja latencia, alta disponibilidad y sincronización de datos en tiempo real."
+        },
+        {
+          nombre: "Supabase",
+          descripcion: "Alternativa open source a Firebase con Postgres, autenticación, almacenamiento y funciones edge. Ideal para proyectos que requieren una base de datos relacional completa con API REST y tiempo real."
+        },
+        {
+          nombre: "PlanetScale",
+          descripcion: "Base de datos MySQL serverless, escalable y distribuida globalmente. Ofrece ramificaciones de bases de datos (similar a git) y despliegue sin tiempo de inactividad."
+        }
+      ],
+      nota: "Todas ofrecen planes gratuitos con límites generosos, perfectos para desarrollo y proyectos iniciales."
+    },
+    {
       titulo: "Scraping y Obtención de Datos Públicos",
       tecnologias: [
         {
